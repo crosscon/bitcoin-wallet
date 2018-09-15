@@ -1,2 +1,1 @@
-# bitcoin-wallet-using-TEE
-Bitcoin Wallet implementation using Trusted Execution Environments
+# Bitcoin Wallet implementation using Trusted Execution Environments
