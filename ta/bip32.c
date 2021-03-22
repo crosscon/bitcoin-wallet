@@ -139,7 +139,7 @@ TEE_Result hdnode_private_ckd(uint8_t* parent_sk, uint8_t* parent_chaincode, uin
 TEE_Result hdnode_public_ckd(uint8_t* parent_sk, uint8_t* parent_chaincode, uint32_t i, uint8_t* child_pk_x, uint8_t* child_pk_y)
 {
 	uint8_t child_sk[32];
-	uint8_t child_pk[32];
+	uint8_t child_pk[65];
 	uint8_t child_chaincode[32];
 	const ecdsa_curve* curve = &secp256k1;
 

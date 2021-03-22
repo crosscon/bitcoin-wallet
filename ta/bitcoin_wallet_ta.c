@@ -228,7 +228,7 @@ static TEE_Result get_bitcoin_address(uint32_t param_types, TEE_Param params[4])
 												TEE_PARAM_TYPE_MEMREF_OUTPUT, 
 												TEE_PARAM_TYPE_NONE);
 	uint32_t account_id;
-	uint8_t address[25];
+	uint8_t address[34];
 	TEE_Result res;
 	
 	DMSG("has been called");
