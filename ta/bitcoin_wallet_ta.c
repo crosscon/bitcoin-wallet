@@ -319,7 +319,7 @@ static void get_child_privatekey(uint32_t i, uint8_t* child_sk, uint8_t* child_c
 		EMSG("Failed to open masterkey: 0x%x", res);
 
 	// Read extended masterkey from object
-	res = TEE_ReadObjectData(obj, masterkey_ext, 32, &masterkey_ext_len);
+	res = TEE_ReadObjectData(obj, masterkey_ext, 64, &masterkey_ext_len);
 	if(res == TEE_SUCCESS)
 		DMSG("Reading masterkey success");
 	else
@@ -362,7 +362,7 @@ static void get_child_publickey(uint32_t i, uint8_t* child_pk_x, uint8_t* child_
 		EMSG("Failed to open masterkey: 0x%x", res);
 
 	// Read extended masterkey from object
-	res = TEE_ReadObjectData(obj, masterkey_ext, 32, &masterkey_ext_len);
+	res = TEE_ReadObjectData(obj, masterkey_ext, 64, &masterkey_ext_len);
 	if(res == TEE_SUCCESS)
 		DMSG("Reading masterkey success");
 	else

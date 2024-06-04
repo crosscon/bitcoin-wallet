@@ -8,7 +8,7 @@
 #include <tx.h>
 
 static TEEC_Result ta_bitcoin_cmd_check_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin);
-static TEEC_Result ta_bitcoin_cmd_generate_new_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin);
+static TEEC_Result ta_bitcoin_cmd_generate_new_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin, char* mnemonic);
 static TEEC_Result ta_bitcoin_cmd_mnemonic_to_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin, char* mnemonic);
 static TEEC_Result ta_bitcoin_cmd_erase_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin);
 static TEEC_Result ta_bitcoin_cmd_issue_transactions(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin, uint32_t i);
@@ -61,8 +61,6 @@ int main(int argc, char *argv[])
 		account_id = argv[4][0]-'0';
 	}
 
-	printf("%d\n", account_id);
-
 	// convert string pin to integer
 	pin = (argv[2][0]-'0')*1000 + (argv[2][1]-'0')*100 + (argv[2][2]-'0')*10 +(argv[2][3]-'0');
 	
@@ -77,27 +75,27 @@ int main(int argc, char *argv[])
 		errx(1, "TEEC_Opensession failed with code 0x%x origin 0x%x", res, err_origin);
 
 	switch(cmd_id){
-		case 1:
-			ta_bitcoin_cmd_check_masterkey(sess, pin, cmd_id, err_origin);
-			break;
-		case 2:
-			ta_bitcoin_cmd_generate_new_masterkey(sess, pin, cmd_id, err_origin);
-			break;
-		case 3:
-			ta_bitcoin_cmd_mnemonic_to_masterkey(sess, pin, cmd_id, err_origin, mnemonic);
-			break;
-		case 4:
-			ta_bitcoin_cmd_erase_masterkey(sess, pin, cmd_id, err_origin);
-			break;
-		case 5:
-			ta_bitcoin_cmd_issue_transactions(sess, pin, cmd_id, err_origin, account_id);
-			break;
-		case 6:
-			ta_bitcoin_cmd_get_bitcoin_address(sess,pin, cmd_id, err_origin, account_id);
-			break;
-		default:
-			help();
-			break;
+	    case 1:
+		ta_bitcoin_cmd_check_masterkey(sess, pin, cmd_id, err_origin);
+		break;
+	    case 2:
+		ta_bitcoin_cmd_generate_new_masterkey(sess, pin, cmd_id, err_origin, mnemonic);
+		break;
+	    case 3:
+		ta_bitcoin_cmd_mnemonic_to_masterkey(sess, pin, cmd_id, err_origin, mnemonic);
+		break;
+	    case 4:
+		ta_bitcoin_cmd_erase_masterkey(sess, pin, cmd_id, err_origin);
+		break;
+	    case 5:
+		ta_bitcoin_cmd_issue_transactions(sess, pin, cmd_id, err_origin, account_id);
+		break;
+	    case 6:
+		ta_bitcoin_cmd_get_bitcoin_address(sess,pin, cmd_id, err_origin, account_id);
+		break;
+	    default:
+		help();
+		break;
 	}
 
 	// Close session
@@ -135,7 +133,7 @@ static TEEC_Result ta_bitcoin_cmd_check_masterkey(TEEC_Session sess, uint32_t pi
 	return TEEC_SUCCESS;
 }
 
-static TEEC_Result ta_bitcoin_cmd_generate_new_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin){
+static TEEC_Result ta_bitcoin_cmd_generate_new_masterkey(TEEC_Session sess, uint32_t pin, uint32_t cmd_id, uint32_t err_origin, char *mnemonic){
 	TEEC_Operation op;
 	TEEC_Result res;
 
@@ -158,6 +156,11 @@ static TEEC_Result ta_bitcoin_cmd_generate_new_masterkey(TEEC_Session sess, uint
 	if (res == TEEC_SUCCESS){
 		printf("Here's your wallet mnemonic!\n");
 		printf("*%s*\n", (char*)op.params[1].tmpref.buffer);
+		for (uint8_t i = 0; i < strlen(op.params[1].tmpref.buffer); i++)
+		{
+			mnemonic[i] = *((char*) (op.params[1].tmpref.buffer) + i);
+		}
+		printf("\n");
 		memset(op.params[1].tmpref.buffer, 0, op.params[1].tmpref.size);
 	}
 	return TEEC_SUCCESS;

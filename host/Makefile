@@ -8,9 +8,9 @@ READELF ?= $(CROSS_COMPILE)readelf
 
 OBJS += main.o tx.o
 
-CFLAGS += -Wall -I../ta/include -I./include -I$(TEEC_EXPORT)/include 
+CFLAGS += -Wall -I../ta/include -I./include -I$(TEEC_EXPORT)/include
 #Add/link other required libraries here
-LDADD += -lteec -L$(TEEC_EXPORT)/lib
+LDFLAGS += -L$(TEEC_EXPORT)/lib -lteec -lpthread
 
 BINARY = bitcoin_wallet
 
@@ -18,8 +18,7 @@ BINARY = bitcoin_wallet
 all: $(BINARY)
 
 $(BINARY): $(OBJS)
-	$(CC) $(CFLAGS) -c main.c tx.c
-	$(CC) $(LDADD) -o main main.o tx.o
+	$(CC) $(CFLAGS) main.c tx.c -o wallet $(LDFLAGS)
 
 .PHONY: clean
 clean:
