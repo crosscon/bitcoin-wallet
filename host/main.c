@@ -76,22 +76,27 @@ int main(int argc, char *argv[])
 
 	switch(cmd_id){
 	    case 1:
-		ta_bitcoin_cmd_check_masterkey(sess, pin, cmd_id, err_origin);
+		ta_bitcoin_cmd_check_masterkey(sess, pin, 1, err_origin);
 		break;
 	    case 2:
-		ta_bitcoin_cmd_generate_new_masterkey(sess, pin, cmd_id, err_origin, mnemonic);
+		ta_bitcoin_cmd_generate_new_masterkey(sess, pin, 2, err_origin, mnemonic);
 		break;
 	    case 3:
-		ta_bitcoin_cmd_mnemonic_to_masterkey(sess, pin, cmd_id, err_origin, mnemonic);
+		ta_bitcoin_cmd_mnemonic_to_masterkey(sess, pin, 3, err_origin, mnemonic);
 		break;
 	    case 4:
-		ta_bitcoin_cmd_erase_masterkey(sess, pin, cmd_id, err_origin);
+		ta_bitcoin_cmd_erase_masterkey(sess, pin, 4, err_origin);
 		break;
 	    case 5:
-		ta_bitcoin_cmd_issue_transactions(sess, pin, cmd_id, err_origin, account_id);
+		ta_bitcoin_cmd_issue_transactions(sess, pin, 5, err_origin, account_id);
 		break;
 	    case 6:
-		ta_bitcoin_cmd_get_bitcoin_address(sess,pin, cmd_id, err_origin, account_id);
+		ta_bitcoin_cmd_get_bitcoin_address(sess,pin, 6, err_origin, account_id);
+		break;
+	    case 7:
+		ta_bitcoin_cmd_check_masterkey(sess, pin, 1, err_origin);
+                getchar();
+		ta_bitcoin_cmd_check_masterkey(sess, pin, 1, err_origin);
 		break;
 	    default:
 		help();
@@ -328,12 +333,12 @@ int help(){
 
 int check_params(int argc, char *argv[]){
 	// cmd_id check
-	if(strlen(argv[1])!=1 || argv[1][0]<48 || argv[1][0]>54){
+	if(strlen(argv[1])!=1 || argv[1][0]<'0' || argv[1][0]>'7'){
 		return -1;
 	}
 
 	// option 3
-	if(argv[1][0]==51){
+	if(argv[1][0]=='3'){
 		if(argc==16 && !strcmp(argv[3],"-a"))
 			return 1;
 		else
@@ -341,16 +346,16 @@ int check_params(int argc, char *argv[]){
 	}
 
 	//option 5 --- only support 9 accounts
-	if(argv[1][0]==53){
-		if(argc==5 && !strcmp(argv[3],"-a") && strlen(argv[4])==1 && argv[4][0]>48 && argv[4][0]<57)
+	if(argv[1][0]=='5'){
+		if(argc==5 && !strcmp(argv[3],"-a") && strlen(argv[4])==1 && argv[4][0]>'0' && argv[4][0]<'9')
 			return 0;
 		else
 			return -1;
 	}
 
 	//option 6
-	if(argv[1][0]==54){
-		if(argc==5 && !strcmp(argv[3],"-a") && strlen(argv[4])==1 && argv[4][0]>48 && argv[4][0]<57)
+	if(argv[1][0]=='6'){
+		if(argc==5 && !strcmp(argv[3],"-a") && strlen(argv[4])==1 && argv[4][0]>'0' && argv[4][0]<'9')
 			return 0;
 		else
 			return -1;
